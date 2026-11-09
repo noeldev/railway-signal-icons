@@ -58,6 +58,7 @@ node tools/icons.mjs --help
 | `clean-templates` | `clean-templates.mjs` | Resolve leftover transforms on the aspect templates   |
 | `render`   | `render-node.mjs`     | Render OSM nodes or tag sets as SVG/PNG, laid out like the map |
 | `export`   | `export-icons.mjs`    | Copy `icons/` into the fork, with width/height from viewBox |
+| `resize`   | `resize-icons.mjs`    | Set width/height from viewBox on icons already in place (fork) |
 | `import`   | `import-icons.mjs`    | Copy fork icons into `icons/`, without width/height  |
 
 Each command can also be run directly (`node tools/audit-svg.mjs ...`);
@@ -234,6 +235,23 @@ never touched.
 Files whose name starts with `_` (e.g. `_spacer.svg`) are layout helpers,
 not icons: their width/height is set by hand, so `export` copies them as
 they are, and `audit` leaves them out of the report.
+
+### resize
+
+```
+node tools/icons.mjs resize --dry-run              # list the changes only
+node tools/icons.mjs resize --scale 3
+node tools/icons.mjs resize --target <dir> --scale 5
+```
+
+Sets `width`/`height` from the `viewBox` on icons already in place,
+without copying the source icons again: `export` does both, `resize` only
+changes the display size (same computation, shared in `lib/svg-size.mjs`).
+With no `--target`, it works on the fork folders of the countries present
+in `icons/` (e.g. `<fork>/symbols/fr`), never on `general/` or the other
+countries. Only the files whose content changes are written, and no backup
+is made since the fork is under version control. Layout helpers keep their
+size.
 
 ### import
 
@@ -508,6 +526,7 @@ against, unlike the others. Treat those filenames as not yet final.
     check-yaml.mjs
     optimize-svg.mjs
     export-icons.mjs
+    resize-icons.mjs
     import-icons.mjs
     generate-aspects.mjs
     clean-templates.mjs
@@ -516,7 +535,7 @@ against, unlike the others. Treat those filenames as not yet final.
     lib/
       shared.mjs                   # PROJECT_ROOT / ICONS_ROOT / DEFAULT_* / MAP_SCALE_PERCENT / shared helpers
       config.mjs                   # fork paths read from config.json
-      svg-size.mjs                 # width/height of the root <svg> (export, import, optimize, render)
+      svg-size.mjs                 # width/height of the root <svg> (export, resize, import, optimize, render)
       svg-tidy.mjs                 # tidy pass shared by optimize and clean-templates
       audit-template.{mjs,html,css,js}
       svg-sprite.mjs               # audit: inline SVG sprite (hashed symbol ids)

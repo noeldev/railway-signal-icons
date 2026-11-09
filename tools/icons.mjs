@@ -14,6 +14,7 @@
 //   clean-templates  Run clean-templates.mjs
 //   render           Run render-node.mjs
 //   export           Run export-icons.mjs
+//   resize           Run resize-icons.mjs
 //   import           Run import-icons.mjs
 //
 // Implementation note:
@@ -37,6 +38,7 @@ const COMMANDS = {
   'clean-templates': { file: 'clean-templates.mjs', desc: 'Resolve leftover transforms on the aspect templates' },
   'render': { file: 'render-node.mjs', desc: 'Render OSM nodes or tag sets as SVG/PNG (map layout)' },
   'export': { file: 'export-icons.mjs', desc: 'Copy icons/ into the fork, with width/height from viewBox' },
+  'resize': { file: 'resize-icons.mjs', desc: 'Set width/height from viewBox on icons already in place (fork)' },
   'import': { file: 'import-icons.mjs', desc: 'Copy fork icons into icons/, without width/height' },
 };
 

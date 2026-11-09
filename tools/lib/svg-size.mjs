@@ -1,11 +1,12 @@
 // svg-size.mjs
 // Display size (width/height attributes) of the root <svg> element. Source
 // icons have none: their viewBox holds the real dimensions in millimetres.
-// Export sets the size from the viewBox at a given scale, import removes it.
+// Export and resize set the size from the viewBox at a given scale, import
+// and optimize remove it.
 // Only the opening tag is touched, every other byte is kept as is, so that
 // removing then setting the same size gives back the original file.
 
-import { MAP_SCALE_PERCENT, parseSvgOpenTag, parseViewBox } from './shared.mjs';
+import { MAP_SCALE_PERCENT, isHelperFile, parseSvgOpenTag, parseViewBox } from './shared.mjs';
 
 const OPEN_TAG = /<svg\b[^>]*>/;
 const SIZE_ATTR = /\s(?:width|height)\s*=\s*(?:"[^"]*"|'[^']*')/g;
@@ -36,4 +37,16 @@ export function setSize(source, { width, height }) {
   if (!match || !VIEWBOX_ATTR.test(match[0])) return null;
   const tag = match[0].replace(SIZE_ATTR, '').replace(VIEWBOX_ATTR, (attr) => ` width="${width}" height="${height}"${attr}`);
   return source.slice(0, match.index) + tag + source.slice(match.index + match[0].length);
+}
+
+/**
+ * Content of an icon with its display size set from its viewBox at `scale`
+ * percent, as export and resize write it: { content } or { error }. Layout
+ * helper files are returned as they are, their size being set by hand.
+ */
+export function sizedIcon(source, file, scale = MAP_SCALE_PERCENT) {
+  if (isHelperFile(file)) return { content: source };
+  const viewBox = svgViewBox(source);
+  const content = viewBox && setSize(source, scaledSize(viewBox, scale));
+  return content ? { content } : { error: 'no viewBox' };
 }

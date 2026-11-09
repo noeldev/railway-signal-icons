@@ -83,6 +83,12 @@ export async function* walkFiles(dir, { ext = null, skipDirs = [] } = {}) {
   }
 }
 
+/** Country folders of the source icon tree (icons/fr...), sorted. */
+export async function iconCountries() {
+  const entries = await readdir(ICONS_ROOT, { withFileTypes: true });
+  return entries.filter((e) => e.isDirectory()).map((e) => e.name).sort();
+}
+
 /** Parse the opening <svg> tag and return its attributes as a plain object. */
 export function parseSvgOpenTag(source) {
   const openTag = (source.match(/<svg\b[^>]*>/i) || [''])[0];

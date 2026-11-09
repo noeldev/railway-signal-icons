@@ -16,14 +16,17 @@
 //   node tools/export-icons.mjs
 //   node tools/export-icons.mjs --prune
 //   node tools/export-icons.mjs --target <dir> --scale 5
+//
+// To change the size of icons already in place without copying them again,
+// see resize-icons.mjs.
 
-import { readFile, writeFile, mkdir, readdir, unlink } from 'node:fs/promises';
+import { readFile, writeFile, mkdir, unlink } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { dirname, join, relative } from 'node:path';
 
-import { ICONS_ROOT, HELPER_FILE_PREFIX, MAP_SCALE_PERCENT, color, isHelperFile, toPosix, walkFiles } from './lib/shared.mjs';
+import { ICONS_ROOT, HELPER_FILE_PREFIX, MAP_SCALE_PERCENT, color, iconCountries, toPosix, walkFiles } from './lib/shared.mjs';
 import { ormPaths } from './lib/config.mjs';
-import { scaledSize, setSize, svgViewBox } from './lib/svg-size.mjs';
+import { sizedIcon } from './lib/svg-size.mjs';
 
 const SKIP_DIRS = ['_backup'];
 
@@ -57,14 +60,6 @@ function parseArgs(argv) {
   return opts;
 }
 
-// Exported content of one source icon, or an error.
-function toExport(raw, file, scale) {
-  if (isHelperFile(file)) return { content: raw };
-  const viewBox = svgViewBox(raw);
-  if (!viewBox) return { error: 'no viewBox' };
-  return { content: setSize(raw, scaledSize(viewBox, scale)) };
-}
-
 // Relative paths (posix) of the source icons.
 async function sourceIcons() {
   const icons = [];
@@ -77,9 +72,8 @@ async function sourceIcons() {
 // Target icons of the exported country folders that have no source icon.
 async function orphanIcons(targetRoot, icons) {
   const known = new Set(icons);
-  const countries = (await readdir(ICONS_ROOT, { withFileTypes: true })).filter((e) => e.isDirectory()).map((e) => e.name);
   const orphans = [];
-  for (const country of countries) {
+  for (const country of await iconCountries()) {
     for await (const file of walkFiles(join(targetRoot, country), { ext: '.svg', skipDirs: SKIP_DIRS })) {
       const rel = toPosix(relative(targetRoot, file));
       if (!known.has(rel)) orphans.push(rel);
@@ -113,7 +107,7 @@ async function main() {
   const icons = await sourceIcons();
   for (const rel of icons) {
     const raw = await readFile(join(ICONS_ROOT, rel), 'utf8');
-    const { content, error } = toExport(raw, rel, opts.scale);
+    const { content, error } = sizedIcon(raw, rel, opts.scale);
     if (error) {
       console.warn(color.yellow(`WARN: ${rel}: ${error}, skipped`));
       counts.failed++;

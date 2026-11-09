@@ -10,6 +10,7 @@
     "optimize": "node optimize-svg.mjs",
     "export": "node export-icons.mjs",
     "export:dry": "node export-icons.mjs --dry-run",
+    "resize": "node resize-icons.mjs",
     "import": "node import-icons.mjs",
     "aspects": "node generate-aspects.mjs",
     "render": "node render-node.mjs"

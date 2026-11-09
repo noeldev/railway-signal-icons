@@ -54,6 +54,12 @@ node icons.mjs --help
 
 ## License
 
-The icons and the other content of this repository are licensed under the
-[Creative Commons Attribution-ShareAlike 4.0 International License](LICENSE)
-(CC BY-SA 4.0). Attribution: noeldev - railway-signal-icons.
+This repository uses two licenses:
+
+- The icons (`icons/`), the other SVG files (e.g. the aspect templates in
+  `tools/aspects/templates/`) and the SNCF Lightbox font
+  (`tools/aspects/fonts/SNCF-Lightbox-Regular.otf`) are licensed under the
+  [Creative Commons Attribution-ShareAlike 4.0 International License](icons/LICENSE)
+  (CC BY-SA 4.0). Attribution: noeldev - railway-signal-icons.
+- The tools code (`tools/*.mjs`, `tools/lib/`) is licensed under the
+  [GNU Affero General Public License v3.0](LICENSE) (AGPL-3.0).
