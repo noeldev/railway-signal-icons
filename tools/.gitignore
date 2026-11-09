@@ -1,0 +1,8 @@
+# Pristine-original backups made by optimize-svg.mjs and clean-templates.mjs
+# before they modify a file. Not part of the project history; regenerated on
+# demand.
+_backup/
+
+# Generated reports and dependencies
+audit-svg.html
+node_modules/

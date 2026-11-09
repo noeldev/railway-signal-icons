@@ -1,0 +1,23 @@
+{
+  "name": "icon-tools",
+  "private": true,
+  "type": "module",
+  "bin": { "icon-tools": "./icons.mjs" },
+  "scripts": {
+    "audit": "node audit-svg.mjs",
+    "audit:text": "node audit-svg.mjs --format text",
+    "check": "node check-yaml.mjs",
+    "optimize": "node optimize-svg.mjs",
+    "export": "node export-icons.mjs",
+    "export:dry": "node export-icons.mjs --dry-run",
+    "import": "node import-icons.mjs",
+    "aspects": "node generate-aspects.mjs",
+    "render": "node render-node.mjs"
+  },
+  "dependencies": {
+    "@resvg/resvg-js": "^2.6.0",
+    "svgo": "^3.0.0",
+    "yaml": "^2.4.0",
+    "@xmldom/xmldom": "^0.9.12"
+  }
+}
